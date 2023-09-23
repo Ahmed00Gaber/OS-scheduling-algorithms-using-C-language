@@ -1,0 +1,100 @@
+/******************************************************************************
+Queue using array
+we used c++ to be able to use bool not in c should be done using enum
+Creating a structure gives the programmer the provision to declare multiple variables
+of different data types treated as a single entity.
+*******************************************************************************/
+#include <iostream>
+
+using namespace std;
+
+const  int capcity=10;
+//struct 
+struct Queue{
+    int arr[capcity];
+    int front =-1;
+    int rear =-1;
+    
+    bool isempty(){
+        if(front==-1 && rear==-1) return true;
+        else return false;
+    }
+    bool isFull(){
+        if(rear== capcity -1) return true;
+        else return false;
+    }
+    void enqueue(int val){
+        if(isFull()) return; //go out
+        
+        else if(isempty()){
+            front=rear=0;  //start from 0
+        }
+        else rear++;
+        arr[rear]=val;
+    }
+    void dequeue(){
+        if(isempty()) return ;
+        else if(front==rear){ //last element
+            front=rear= -1;
+        }
+        else front++;
+    }
+    int front_val(){
+        if(isempty()) return -1;
+        else{
+            return arr[front];
+        }
+    }
+};
+
+int main()
+{   
+    Queue q; //create object
+    int n,x; 
+    
+    cout << "Type a number of processes: ";
+    cin >> n; 
+    
+    // entering burst time
+    cout << "Type the burst time:\n";   
+    for(int i=0;i<n;i++){
+       cout << "p["<<i<<"]: ";
+       cin >> x; 
+       q.enqueue(x);
+    }
+   
+//Note count inc counter move then limited opposite counter to not exceed process value
+    cout << "\nGuantt schart:\n";
+    cout << "process:   completion_Time\n";
+    int qtm_time =4;
+    int t,count=0,opp_count=n,total=0;
+    while(!q.isempty()){ //not all element is dequeded
+        if(qtm_time>q.front_val()){
+            count++;
+            total=total+q.arr[q.front];
+            q.arr[q.front]=0;
+            cout << "[p"<< count<<"]:      " << total <<endl;
+            q.dequeue();
+            if(count>=opp_count) count=0;
+            opp_count--;
+        }
+        else{
+          t= q.arr[q.front] - qtm_time;
+          count++;
+          q.arr[q.front]=t;
+          total=total+qtm_time;
+          cout << "[p"<< count<<"]:      " << total <<endl;
+          q.dequeue();
+          q.enqueue(t);
+          if(count>=opp_count) count=0;
+        }
+        // q.dequeue();
+    }
+
+    return 0;
+}
+
+
+
+
+
